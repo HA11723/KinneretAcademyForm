@@ -70,38 +70,38 @@
           />
 
           <label>תאריך לידה</label>
-          <div class="date-row" style="display: flex; gap: 15px">
-            <div style="flex: 1">
-              <label for="birthDay">יום</label>
-              <input
-                type="text"
-                id="birthDay"
-                name="birthDay"
-                maxlength="2"
-                placeholder="DD"
-                required
-              />
-            </div>
-            <div style="flex: 1">
-              <label for="birthMonth">חודש</label>
-              <input
-                type="text"
-                id="birthMonth"
-                name="birthMonth"
-                maxlength="2"
-                placeholder="MM"
-                required
-              />
-            </div>
-            <div style="flex: 1">
+          <div class="row" style="gap: 8px; align-items: flex-end">
+            <div>
               <label for="birthYear">שנה</label>
               <input
                 type="text"
                 id="birthYear"
                 name="birthYear"
                 maxlength="4"
-                placeholder="YYYY"
                 required
+                style="width: 80px"
+              />
+            </div>
+            <div>
+              <label for="birthMonth">חודש</label>
+              <input
+                type="text"
+                id="birthMonth"
+                name="birthMonth"
+                maxlength="2"
+                required
+                style="width: 60px"
+              />
+            </div>
+            <div>
+              <label for="birthDay">יום</label>
+              <input
+                type="text"
+                id="birthDay"
+                name="birthDay"
+                maxlength="2"
+                required
+                style="width: 60px"
               />
             </div>
           </div>
@@ -259,19 +259,10 @@
         </div>
 
         <div class="section">
-          <h3>7. רישום פנימי</h3>
-          <label for="advisorName">שם יועץ/ת</label>
-          <input type="text" id="advisorName" name="advisorName" />
-        </div>
-
-        <div class="section">
-          <h3>8. חתימת המועמד</h3>
-          <div class="center" style="margin-bottom: 20px"></div>
-          <label for="signature-pad">חתימה דיגיטלית</label>
-          <canvas id="signature-pad" width="400" height="200"></canvas>
-          <button type="button" onclick="clearSignature()" class="clear-button">
-            נקה חתימה
-          </button>
+          <label style="display: flex; align-items: center; gap: 8px">
+            <input type="checkbox" id="agreement" name="agreement" required />
+            קראתי והסכמתי על כל מה שכתוב
+          </label>
         </div>
 
         <div id="errorMsg" class="error"></div>
