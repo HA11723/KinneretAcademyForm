@@ -41,7 +41,8 @@
         />
       </div>
       <h2>טופס הרשמה למסלול תואר B.A רב תחומי וחינוך<br />מכללת כנרת</h2>
-      <form id="registrationForm">
+      <form id="registrationForm" data-netlify="true">
+        <input type="hidden" name="form-name" value="registrationForm" />
         <div class="section">
           <h3>1. פרטים אישיים</h3>
           <label for="idNumber">מספר תעודת זהות</label>
@@ -264,10 +265,11 @@
         <div class="section">
           <label style="display: flex; align-items: center; gap: 8px">
             <input type="checkbox" id="agreement" name="agreement" required />
-            קראתי והסכמתי על כל מה שכתוב
+            קראתי הכל ואני מאשר/ת
           </label>
         </div>
 
+        <!-- Restore signature section before submit button -->
         <div class="section">
           <h3>חתימה דיגיטלית</h3>
           <label for="signature-pad">חתימה דיגיטלית</label>
