@@ -41,7 +41,7 @@
         />
       </div>
       <h2>טופס הרשמה למסלול תואר B.A רב תחומי וחינוך<br />מכללת כנרת</h2>
-      <form id="registrationForm" data-netlify="true">
+      <form id="registrationForm">
         <div class="section">
           <h3>1. פרטים אישיים</h3>
           <label for="idNumber">מספר תעודת זהות</label>
@@ -70,7 +70,10 @@
           />
 
           <label>תאריך לידה</label>
-          <div class="row" style="gap: 8px; align-items: flex-end">
+          <div
+            class="row"
+            style="display: flex; gap: 8px; align-items: flex-end"
+          >
             <div>
               <label for="birthYear">שנה</label>
               <input
@@ -265,6 +268,15 @@
           </label>
         </div>
 
+        <!-- Restore signature section before submit button -->
+        <div class="section">
+          <h3>חתימה דיגיטלית</h3>
+          <label for="signature-pad">חתימה דיגיטלית</label>
+          <canvas id="signature-pad" width="400" height="200"></canvas>
+          <button type="button" onclick="clearSignature()" class="clear-button">
+            נקה חתימה
+          </button>
+        </div>
         <div id="errorMsg" class="error"></div>
 
         <button type="submit" class="btn">שלח טופס</button>
