@@ -41,7 +41,7 @@
         />
       </div>
       <h2>טופס הרשמה למסלול תואר B.A רב תחומי וחינוך<br />מכללת כנרת</h2>
-      <form>
+      <form id="registrationForm" data-netlify="true">
         <div class="section">
           <h3>1. פרטים אישיים</h3>
           <label for="idNumber">מספר תעודת זהות</label>
@@ -272,8 +272,20 @@
           <input type="text" id="advisorSignature" name="advisorSignature" />
         </div>
 
+        <div class="section">
+          <h3>8. חתימה</h3>
+          <label for="signature-pad">חתימה דיגיטלית</label>
+          <canvas id="signature-pad" width="400" height="200"></canvas>
+          <button type="button" onclick="clearSignature()" class="clear-button">
+            נקה חתימה
+          </button>
+        </div>
+
+        <div id="errorMsg" class="error"></div>
+
         <button type="submit" class="btn">שלח טופס</button>
       </form>
     </div>
+    <script src="/script.js"></script>
   </body>
 </html>
