@@ -4,7 +4,7 @@ import XLSX from "xlsx";
 
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransporter({
   service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
@@ -75,10 +75,16 @@ export const handler = async (event) => {
             "שם פרטי": fields.firstName || "",
             "שם משפחה": fields.lastName || "",
             "תעודת זהות": fields.idNumber || "",
+            "טלפון נייד": fields.phone || "",
+            "תאריך לידה": `${fields.birthDay || ""}/${
+              fields.birthMonth || ""
+            }/${fields.birthYear || ""}`,
+            יישוב: fields.city || "",
             מין: fields.gender || "",
-            טלפון: fields.phone || "",
-            מסלול: fields.program || "",
-            "הסכמה לתנאים": fields.agreement ? "כן" : "לא",
+            "דואר אלקטרוני": fields.email || "",
+            "הסכמה לפרסום בפייסבוק": fields.facebookConsent || "",
+            "שם יועץ/ת": fields.advisorName || "",
+            מסלול: "תואר B.A רב תחומי וחינוך - מכללת כנרת",
             "קבצים מצורפים": files
               .filter((f) => f.name !== "signature")
               .map((f) => f.filename)
@@ -95,33 +101,46 @@ export const handler = async (event) => {
           type: "buffer",
           bookType: "xlsx",
         });
-        const fileName = `registration_${
+        const fileName = `registration_kinneret_${
           new Date().toISOString().split("T")[0]
         }_${Date.now()}.xlsx`;
 
         const mailOptions = {
           from: process.env.EMAIL_USER,
           to: process.env.EMAIL_RECEIVER,
-          subject: "הרשמה חדשה למכללת אופק טירה",
+          subject: "הרשמה חדשה למכללת כנרת",
           html: `
-            <p><strong>שם פרטי:</strong> ${fields.firstName || ""}</p>
-            <p><strong>שם משפחה:</strong> ${fields.lastName || ""}</p>
-            <p><strong>תעודת זהות:</strong> ${fields.idNumber || ""}</p>
-            <p><strong>טלפון:</strong> ${fields.phone || ""}</p>
-            <p><strong>תאריך לידה:</strong> ${fields.birthDay || ""}/${
+            <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right;">
+              <h2 style="color: #1976d2; text-align: center;">הרשמה חדשה - מכללת כנרת</h2>
+              <h3 style="color: #333;">פרטים אישיים:</h3>
+              <p><strong>שם פרטי:</strong> ${fields.firstName || ""}</p>
+              <p><strong>שם משפחה:</strong> ${fields.lastName || ""}</p>
+              <p><strong>תעודת זהות:</strong> ${fields.idNumber || ""}</p>
+              <p><strong>טלפון נייד:</strong> ${fields.phone || ""}</p>
+              <p><strong>תאריך לידה:</strong> ${fields.birthDay || ""}/${
             fields.birthMonth || ""
           }/${fields.birthYear || ""}</p>
-            <p><strong>יישוב:</strong> ${fields.city || ""}</p>
-            <p><strong>מין:</strong> ${fields.gender || ""}</p>
-            <p><strong>דואר אלקטרוני:</strong> ${fields.email || ""}</p>
-            <p><strong>הסכמה לפרסום בפייסבוק:</strong> ${
-              fields.facebookConsent || ""
-            }</p>
-            <p><strong>שם יועץ/ת:</strong> ${fields.advisorName || ""}</p>
-            <p><strong>חתימת יועץ/ת:</strong> ${
-              fields.advisorSignature || ""
-            }</p>
-            <p><strong>חתימה:</strong><br><img src="cid:signature" width="200"/></p>
+              <p><strong>יישוב:</strong> ${fields.city || ""}</p>
+              <p><strong>מין:</strong> ${fields.gender || ""}</p>
+              <p><strong>דואר אלקטרוני:</strong> ${fields.email || ""}</p>
+              
+              <h3 style="color: #333;">הסכמות:</h3>
+              <p><strong>הסכמה לפרסום בפייסבוק:</strong> ${
+                fields.facebookConsent || ""
+              }</p>
+              <p><strong>קראתי והסכמתי על כל מה שכתוב:</strong> ${
+                fields.agreement ? "כן" : "לא"
+              }</p>
+              
+              <h3 style="color: #333;">חתימה דיגיטלית:</h3>
+              <p><img src="cid:signature" width="300" style="border: 1px solid #ddd; padding: 10px;"/></p>
+              
+              <hr style="margin: 20px 0;">
+              <p style="font-size: 12px; color: #666;">
+                הרשמה זו נשלחה דרך טופס ההרשמה הדיגיטלי של מכללת כנרת<br>
+                תאריך שליחה: ${new Date().toLocaleString("he-IL")}
+              </p>
+            </div>
           `,
           attachments: [
             {
@@ -151,13 +170,19 @@ export const handler = async (event) => {
           console.log("✅ Email sent successfully");
           resolve({
             statusCode: 200,
-            body: JSON.stringify({ success: true }),
+            body: JSON.stringify({
+              success: true,
+              message: "הטופס נשלח בהצלחה",
+            }),
           });
         } catch (error) {
           console.error("❌ Failed to send email:", error);
           resolve({
             statusCode: 500,
-            body: JSON.stringify({ success: false, error: error.message }),
+            body: JSON.stringify({
+              success: false,
+              error: error.message,
+            }),
           });
         }
       });
@@ -168,7 +193,10 @@ export const handler = async (event) => {
     console.error("❌ Handler failed:", err);
     return {
       statusCode: 500,
-      body: JSON.stringify({ success: false, error: err.message }),
+      body: JSON.stringify({
+        success: false,
+        error: err.message,
+      }),
     };
   }
 };
