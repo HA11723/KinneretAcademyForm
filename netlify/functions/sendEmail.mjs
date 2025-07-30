@@ -1,107 +1,207 @@
-const form = document.getElementById("registrationForm");
-const canvas = document.getElementById("signature-pad");
-const ctx = canvas.getContext("2d");
-const errorMsg = document.getElementById("errorMsg");
-let isDrawing = false;
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+import * as XLSX from "xlsx";
 
-// Canvas setup
-ctx.strokeStyle = "#000";
-ctx.lineWidth = 2;
-ctx.lineCap = "round";
+dotenv.config();
 
-// Mouse events
-canvas.addEventListener("mousedown", (e) => {
-  isDrawing = true;
-  ctx.beginPath();
-  ctx.moveTo(e.offsetX, e.offsetY);
-});
-canvas.addEventListener("mousemove", (e) => {
-  if (isDrawing) {
-    ctx.lineTo(e.offsetX, e.offsetY);
-    ctx.stroke();
-  }
-});
-canvas.addEventListener("mouseup", () => (isDrawing = false));
-canvas.addEventListener("mouseleave", () => (isDrawing = false));
-
-// Touch events
-canvas.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  isDrawing = true;
-  const pos = getTouchPos(canvas, e);
-  ctx.beginPath();
-  ctx.moveTo(pos.x, pos.y);
-});
-canvas.addEventListener("touchmove", (e) => {
-  e.preventDefault();
-  if (isDrawing) {
-    const pos = getTouchPos(canvas, e);
-    ctx.lineTo(pos.x, pos.y);
-    ctx.stroke();
-  }
-});
-canvas.addEventListener("touchend", (e) => {
-  e.preventDefault();
-  isDrawing = false;
+const transporter = nodemailer.createTransporter({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
 });
 
-function getTouchPos(canvasDom, e) {
-  const rect = canvasDom.getBoundingClientRect();
-  return {
-    x: e.touches[0].clientX - rect.left,
-    y: e.touches[0].clientY - rect.top,
-  };
-}
+export const handler = async (event) => {
+  try {
+    if (event.httpMethod !== "POST") {
+      return { statusCode: 405, body: "Method Not Allowed" };
+    }
 
-function clearSignature() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
+    const rawBody = Buffer.from(event.body, "base64");
+    const contentType = event.headers["content-type"];
+    const busboyModule = await import("busboy");
+    const bb = busboyModule.default({
+      headers: { "content-type": contentType },
+    });
 
-// Form submission
-form.addEventListener("submit", function (event) {
-  event.preventDefault();
-  errorMsg.textContent = "";
+    const fields = {};
+    const files = [];
 
-  const formData = new FormData(form);
-
-  // Check if signature is empty
-  const blank = document.createElement("canvas");
-  blank.width = canvas.width;
-  blank.height = canvas.height;
-  const blankSignature = blank.toDataURL();
-  if (canvas.toDataURL() === blankSignature) {
-    errorMsg.textContent = "אנא חתום בטופס לפני השליחה.";
-    return;
-  }
-
-  // Add signature as PNG blob
-  canvas.toBlob((blob) => {
-    formData.append("signature", blob, "signature.png");
-
-    console.log("📤 Sending form data...");
-    fetch("/.netlify/functions/sendEmail", {
-      method: "POST",
-      body: formData,
-    })
-      .then((res) => {
-        console.log("📥 Response status:", res.status);
-        return res.json();
-      })
-      .then((data) => {
-        console.log("📥 Response data:", data);
-        if (data.success) {
-          window.open("/success.html", "_blank");
-          form.reset();
-          clearSignature();
-        } else {
-          errorMsg.textContent = `⚠️ שגיאה בשליחה: ${
-            data.error || "Unknown error"
-          }`;
-        }
-      })
-      .catch((err) => {
-        console.error("❌ Error sending:", err);
-        errorMsg.textContent = `⚠️ שגיאה בשליחה לשרת: ${err.message}`;
+    return new Promise((resolve) => {
+      bb.on("field", (name, val) => {
+        fields[name] = val;
       });
-  }, "image/png");
-});
+
+      bb.on("file", (name, file, info) => {
+        const buffers = [];
+        file.on("data", (d) => buffers.push(d));
+        file.on("end", () => {
+          files.push({
+            name,
+            filename: info.filename,
+            content: Buffer.concat(buffers),
+            contentType: info.mimeType,
+          });
+        });
+      });
+
+      bb.on("finish", async () => {
+        console.log("✅ Fields received:", fields);
+        console.log(
+          "✅ Files received:",
+          files.map((f) => `${f.name} (${f.filename})`)
+        );
+
+        const signatureFile = files.find(
+          (f) => f.name === "signature" || f.filename === "signature.png"
+        );
+
+        console.log("🔍 Looking for signature file:", signatureFile);
+
+        // Temporarily make signature optional for debugging
+        /*
+        if (!signatureFile) {
+          console.error("❌ Missing signature file");
+          console.log("📁 Available files:", files);
+          return resolve({
+            statusCode: 400,
+            body: JSON.stringify({
+              success: false,
+              error: "Missing signature",
+            }),
+          });
+        }
+        */
+
+        // Create Excel file with form data
+        const excelData = [
+          {
+            "תאריך הרשמה": new Date().toLocaleString("he-IL"),
+            "שם פרטי": fields.firstName || "",
+            "שם משפחה": fields.lastName || "",
+            "תעודת זהות": fields.idNumber || "",
+            "טלפון נייד": fields.phone || "",
+            "תאריך לידה": `${fields.birthDay || ""}/${
+              fields.birthMonth || ""
+            }/${fields.birthYear || ""}`,
+            יישוב: fields.city || "",
+            מין: fields.gender || "",
+            "דואר אלקטרוני": fields.email || "",
+            "הסכמה לפרסום בפייסבוק": fields.facebookConsent || "",
+            מסלול: "תואר B.A רב תחומי וחינוך - מכללת כנרת",
+            "קבצים מצורפים": files
+              .filter((f) => f.name !== "signature")
+              .map((f) => f.filename)
+              .join(", "),
+          },
+        ];
+
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(excelData);
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Registrations");
+
+        // Generate Excel file buffer
+        const excelBuffer = XLSX.write(workbook, {
+          type: "buffer",
+          bookType: "xlsx",
+        });
+        const fileName = `registration_kinneret_${
+          new Date().toISOString().split("T")[0]
+        }_${Date.now()}.xlsx`;
+
+        const mailOptions = {
+          from: process.env.EMAIL_USER,
+          to: process.env.EMAIL_RECEIVER,
+          subject: "הרשמה חדשה למכללת כנרת",
+          html: `
+            <div style="font-family: Arial, sans-serif; direction: rtl; text-align: right;">
+              <h2 style="color: #1976d2; text-align: center;">הרשמה חדשה - מכללת כנרת</h2>
+              <h3 style="color: #333;">פרטים אישיים:</h3>
+              <p><strong>שם פרטי:</strong> ${fields.firstName || ""}</p>
+              <p><strong>שם משפחה:</strong> ${fields.lastName || ""}</p>
+              <p><strong>תעודת זהות:</strong> ${fields.idNumber || ""}</p>
+              <p><strong>טלפון נייד:</strong> ${fields.phone || ""}</p>
+              <p><strong>תאריך לידה:</strong> ${fields.birthDay || ""}/${
+            fields.birthMonth || ""
+          }/${fields.birthYear || ""}</p>
+              <p><strong>יישוב:</strong> ${fields.city || ""}</p>
+              <p><strong>מין:</strong> ${fields.gender || ""}</p>
+              <p><strong>דואר אלקטרוני:</strong> ${fields.email || ""}</p>
+              
+              <h3 style="color: #333;">הסכמות:</h3>
+              <p><strong>הסכמה לפרסום בפייסבוק:</strong> ${
+                fields.facebookConsent || ""
+              }</p>
+              <p><strong>קראתי והסכמתי על כל מה שכתוב:</strong> ${
+                fields.agreement ? "כן" : "לא"
+              }</p>
+              
+              <h3 style="color: #333;">חתימה דיגיטלית:</h3>
+              <p><img src="cid:signature" width="300" style="border: 1px solid #ddd; padding: 10px;"/></p>
+              
+              <hr style="margin: 20px 0;">
+              <p style="font-size: 12px; color: #666;">
+                הרשמה זו נשלחה דרך טופס ההרשמה הדיגיטלי של מכללת כנרת<br>
+                תאריך שליחה: ${new Date().toLocaleString("he-IL")}
+              </p>
+            </div>
+          `,
+          attachments: [
+            {
+              filename: fileName,
+              content: excelBuffer, // Changed from csvData to excelBuffer
+              contentType:
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Changed content type for Excel
+            },
+            ...files
+              .filter((f) => f.name !== "signature")
+              .map((f) => ({
+                filename: f.filename,
+                content: f.content,
+                contentType: f.contentType,
+              })),
+            {
+              filename: "signature.png",
+              content: signatureFile.content,
+              contentType: signatureFile.contentType,
+              cid: "signature",
+            },
+          ],
+        };
+
+        try {
+          await transporter.sendMail(mailOptions);
+          console.log("✅ Email sent successfully");
+          resolve({
+            statusCode: 200,
+            body: JSON.stringify({
+              success: true,
+              message: "הטופס נשלח בהצלחה",
+            }),
+          });
+        } catch (error) {
+          console.error("❌ Failed to send email:", error);
+          resolve({
+            statusCode: 500,
+            body: JSON.stringify({
+              success: false,
+              error: error.message,
+            }),
+          });
+        }
+      });
+
+      bb.end(rawBody);
+    });
+  } catch (err) {
+    console.error("❌ Handler failed:", err);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        success: false,
+        error: err.message,
+      }),
+    };
+  }
+};
