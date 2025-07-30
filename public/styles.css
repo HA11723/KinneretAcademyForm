@@ -1,0 +1,296 @@
+body {
+    font-family: david, sans-serif;
+    direction: rtl;
+    background-size: cover;
+    background-position: center;
+    padding: 40px;
+    margin: 0;
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.form-container {
+    max-width: 900px;
+    width: 100%;
+    margin: auto;
+    background-color: rgba(255,255,255,0.92); /* semi-transparent white for readability */
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+.form-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 220px;
+    background: url('/background.jpeg') top center no-repeat;
+    background-size: cover;
+    opacity: 0.48;
+    z-index: 0;
+}
+.form-container > * {
+    position: relative;
+    z-index: 1;
+}
+
+.title-box {
+    background-color: #5690a9;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.title-box h2 {
+    color: white;
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.title-box img {
+    display: block;
+    margin: 0 auto 15px auto;
+    max-width: 100%;
+    height: auto;
+}
+
+label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+    color: #333;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #5690a9;
+    box-shadow: 0 0 5px rgba(164, 208, 255, 0.3);
+}
+
+/* Gender radio buttons styling */
+input[type="radio"] {
+    width: auto;
+    margin: 0 5px 0 0;
+    transform: scale(1.1);
+}
+
+.btn {
+    background-color: #5690a9;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background-color: #5690a9;
+    transform: translateY(-1px);
+}
+
+.error {
+    color: red;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+canvas {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 5px;
+    background-color: #fafafa;
+    cursor: crosshair;
+}
+
+.clear-button {
+    margin-top: 10px;
+    background-color: #dc3545;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.clear-button:hover {
+    background-color: #a71d2a;
+}
+
+/* Agreement box styling */
+.agreement-box {
+    background-color: #5690a9;
+    padding: 15px;
+    border-radius: 8px;
+    color: white;
+    margin: 20px 0;
+    font-weight: normal;
+}
+
+.agreement-box input[type="checkbox"] {
+    transform: scale(1.2);
+    margin-left: 10px;
+    cursor: pointer;
+    width: auto;
+}
+
+.agreement-box label {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+    margin: 0;
+    color: white;
+    cursor: pointer;
+}
+
+/* Commitment and cancellation sections */
+.commitment-section, .cancellation-section {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    border-left: 4px solid #5690a9;
+}
+
+.commitment-section h3, .cancellation-section h3 {
+    color: #5690a9;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.cancellation-section h4 {
+    color: #333;
+    margin: 15px 0 10px 0;
+    font-size: 1.1em;
+}
+
+.declaration-text {
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+}
+
+/* Refund table styling */
+.refund-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.refund-table th, .refund-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.refund-table th {
+    background-color: #5690a9;
+    color: white;
+    font-weight: bold;
+}
+
+.refund-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.refund-table tr:hover {
+    background-color: #f5f5f5;
+}
+.logo-row img {
+    width: 200px !important;
+    height: 200px !important;
+    max-width: 100%;
+    object-fit: contain;
+}  
+ .logo-row {
+    margin-top: -36px !important;
+}
+
+
+/* Responsive design */
+@media (max-width: 768px) {
+    body {
+        padding: 20px;
+    }
+    
+    .form-container {
+        padding: 20px;
+    }
+    
+    .title-box h2 {
+        font-size: 1.3em;
+    }
+    
+    .title-box img {
+        width: 200px;
+    }
+    
+    input, select {
+        font-size: 16px; 
+    }
+    .logo-row {
+        margin-top: -36px !important;
+    }
+  
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .form-container {
+        padding: 15px;
+    }
+    
+    .title-box img {
+        width: 150px;
+    }
+    
+    canvas {
+        width: 100%;
+        height: 100px;
+    }
+}
+
+.center {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Style for the top heading above the logos */
+.form-container > .center:first-child {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 16px;
+}

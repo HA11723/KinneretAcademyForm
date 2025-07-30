@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>טופס הרשמה למסלול תואר B.A רב תחומי וחינוך - מכללת כנרת</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <!-- Removed inline style block to allow external CSS background image to show -->
+  </head>
+  <body>
+    <div class="form-container">
+      <div
+        class="center"
+        style="font-size: 1.5em; font-weight: bold; margin-bottom: 10px"
+      >
+        טופש הרשמה האקדמיה כנרת
+      </div>
+      <div
+        class="logo-row"
+        style="
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 24px;
+          margin-bottom: 18px;
+        "
+      >
+        <img
+          src="/logo1.jpeg"
+          alt="לוגו 1"
+          width="120"
+          height="120"
+          style="object-fit: contain"
+        />
+        <img
+          src="/logo2.jpeg"
+          alt="לוגו 2"
+          width="120"
+          height="120"
+          style="object-fit: contain"
+        />
+      </div>
+      <h2>טופס הרשמה למסלול תואר B.A רב תחומי וחינוך<br />מכללת כנרת</h2>
+      <form>
+        <div class="section">
+          <h3>1. פרטים אישיים</h3>
+          <label for="idNumber">מספר תעודת זהות</label>
+          <input
+            type="text"
+            id="idNumber"
+            name="idNumber"
+            maxlength="9"
+            required
+          />
+
+          <label for="lastName">שם משפחה</label>
+          <input type="text" id="lastName" name="lastName" required />
+
+          <label for="firstName">שם פרטי</label>
+          <input type="text" id="firstName" name="firstName" required />
+
+          <label for="phone">טלפון נייד</label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            pattern="^05[0-9]{8}$"
+            placeholder="05XXXXXXXX"
+            required
+          />
+
+          <label>תאריך לידה</label>
+          <div class="row">
+            <div>
+              <label for="birthYear">שנה</label>
+              <input
+                type="text"
+                id="birthYear"
+                name="birthYear"
+                maxlength="4"
+                required
+              />
+            </div>
+            <div>
+              <label for="birthMonth">חודש</label>
+              <input
+                type="text"
+                id="birthMonth"
+                name="birthMonth"
+                maxlength="2"
+                required
+              />
+            </div>
+            <div>
+              <label for="birthDay">יום</label>
+              <input
+                type="text"
+                id="birthDay"
+                name="birthDay"
+                maxlength="2"
+                required
+              />
+            </div>
+          </div>
+
+          <label for="city">יישוב</label>
+          <input type="text" id="city" name="city" required />
+
+          <label>מין</label>
+          <div class="radio-group">
+            <label
+              ><input type="radio" name="gender" value="זכר" required />
+              זכר</label
+            >
+            <label
+              ><input type="radio" name="gender" value="נקבה" required />
+              נקבה</label
+            >
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>2. כתובת דואר אלקטרוני</h3>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            placeholder="example@domain.com"
+            style="width: 100%"
+          />
+        </div>
+
+        <div class="section">
+          <h3>3. הצהרת המועמד</h3>
+          <ul class="declaration-list">
+            <li>
+              ❖ הנני מצהיר שהפרטים המצוינים בטופס זה הם הפרטים המלאים המדויקים
+              והנכונים.
+            </li>
+            <li>
+              ❖ ברור לי ומוסכם עלי כי לא אוכל להקים מערכת שעות ללא ביצוע התשלום
+              הראשון של שכר הלימוד וכי התשלום יהווה מבחינתי התחייבות.
+            </li>
+            <li>
+              ❖ הנני מאשר ומסכים כי עם קבלתי ללימודים באופק תהא המכללה רשאית
+              למסור פרטים אודותי.
+            </li>
+            <li>
+              ❖ ידוע לי שלמכללה הזכות לשנות את תכונית הלימוד/ זמן הלימוד / ימי
+              הלימוד ומקום הלימוד ללא הודעה מוקדמת.
+            </li>
+            <li>
+              ❖ אני מסכים שיעלו תמונות שלי לדף פייסבוק של המכללה או כל דף שקשור
+              למכללה.
+              <span class="radio-group">
+                <label
+                  ><input
+                    type="radio"
+                    name="facebookConsent"
+                    value="כן"
+                    required
+                  />
+                  כן</label
+                >
+                <label
+                  ><input
+                    type="radio"
+                    name="facebookConsent"
+                    value="לא"
+                    required
+                  />
+                  לא</label
+                >
+              </span>
+            </li>
+            <li>❖ הנני מאשר ומסכים לכל האמור בטופס ההרשמה.</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h3>4. כתב התחייבות לתשלום שכר לימוד</h3>
+          <ul class="declaration-list">
+            <li>
+              ❖ הריני מתחייב לעמוד בהסדר התשלומים של שכר הלימוד במלואו, ולהקפיד
+              על התשלומים במועדים הקבועים לכך.
+            </li>
+            <li>
+              ❖ ידוע לי, כי במידה ולא אעמוד בתנאים המפורטים לעיל יופסקו לימודי
+              במכללה ללא התראה נוספת.
+            </li>
+            <li>
+              ❖ התחייבות זו תקופה גם אם אפסיק או יופסקו לימודי ע"י המכללה במהלך
+              הלימודים.
+            </li>
+            <li>❖ החזרי כסף למפסיקי לימודים יהיו לפי תקנון המכללה.</li>
+            <li>❖ אי הופעה לשיעורים לא פוטרת אותי מחובת התשלום.</li>
+            <li>
+              ❖ כל הודעה לרבות מכתבי בית שתשלח ע"י המכללה בדואר רשום לכתובתי
+              מעלה יראו כהודעה שנמסרה לידי כעבור 72 שעות מזמן המשלוח.
+            </li>
+            <li>❖ דמי רישום אינם מוחזרים.</li>
+          </ul>
+          <div style="margin-top: 18px">
+            <strong>תנאי קבלה למסלול:</strong>
+            <ol class="declaration-list">
+              <li>זכאות לתעודת בגרות מלאה בציון משוקלל של 80 ומעלה.</li>
+              <li>
+                עמידה בבחינת יע"ל בציון הנדרש או השתתפות בקורס הכנה מקביל המאושר
+                ע"י המוסד כחלופה לבחינה.
+              </li>
+              <li>עמידה במבחן אמיר"ם.</li>
+              <li>
+                מעבר לשנה שנייה מותנה בעמידה בתנאי קבלה של תוכנית שנה ראשונה
+                והצלחה בכל הקורסים הנדרשים.
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>5. נוהל הפסקת לימודים</h3>
+          <ul class="declaration-list">
+            <li>
+              ❖ הפסקת לימודים תעשה במזכירות המכללה (באמצעות הודעה בכתב בלבד!!).
+            </li>
+            <li>❖ סטודנט שלא יודיע בכתב יחויב במלוא שכר הלימוד.</li>
+          </ul>
+        </div>
+
+        <div class="section">
+          <h3>6. נוהל החזר כספי</h3>
+          <ul class="declaration-list">
+            <li>❖ הסטודנט חייב להודיע למכללה בכתב שברצונו לבטל את הלימודים.</li>
+            <li>❖ דמי רישום למכללה לא יוכללו כהחזר הכספי.</li>
+            <li>❖ החזר כספי עבור שכר לימודים ייקבע כפי שמפורט בטבלה:</li>
+          </ul>
+          <table class="refund-table">
+            <thead>
+              <tr>
+                <th>תקופת ביטול</th>
+                <th>אחוז ההחזר הכספי</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>עד שבועיים לפני תחילת הלימודים</td>
+                <td>50% מיתרת שכר הלימוד</td>
+              </tr>
+              <tr>
+                <td>עד השבוע הראשון</td>
+                <td>אין החזר כספי</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <div class="center" style="margin-top: 30px">
+            <span
+              >אני הח"מ <span class="signature-line"></span> ת.ז.
+              <span class="signature-line"></span> מאשר/ת</span
+            >
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>7. רישום פנימי</h3>
+          <label for="advisorName">שם יועץ/ת</label>
+          <input type="text" id="advisorName" name="advisorName" />
+          <label for="advisorSignature">חתימה</label>
+          <input type="text" id="advisorSignature" name="advisorSignature" />
+        </div>
+
+        <button type="submit" class="btn">שלח טופס</button>
+      </form>
+    </div>
+  </body>
+</html>

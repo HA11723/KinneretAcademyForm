@@ -1,0 +1,14 @@
+{
+  "name": "registration-form-email",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "echo 'No build step required'"
+  },
+  "type": "module",
+  "dependencies": {
+    "nodemailer": "^7.0.4",
+    "busboy": "^1.6.0",
+    "dotenv": "^16.3.1",
+    "xlsx": "^0.18.5"
+  }
+}
