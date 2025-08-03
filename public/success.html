@@ -1,12 +1,255 @@
 <!DOCTYPE html>
-<html lang="he">
-<head>
-  <meta charset="UTF-8" />
-  <title>טופס נשלח</title>
-</head>
-<body style="text-align: center; padding: 50px; font-family: Arial;">
-  <h1 style="color: green;">✅ הטופס נשלח בהצלחה!</h1>
-  <p>נחזור אליך בהקדם האפשרי</p>
-</body>
-</html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>טופס נשלח בהצלחה - מכללת כנרת</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      body {
+        overflow-x: hidden;
+        width: 100%;
+        max-width: 100vw;
+      }
 
+      .success-container {
+        max-width: 900px;
+        width: 100%;
+        margin: auto;
+        background-color: rgba(255, 255, 255, 0.92);
+        padding: 30px 40px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        animation: fadeInUp 0.8s ease-out;
+        box-sizing: border-box;
+      }
+
+      .success-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 220px;
+        background: url("/background.jpeg") top center no-repeat;
+        background-size: cover;
+        opacity: 0.48;
+        z-index: 0;
+      }
+
+      .success-container > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .header-section {
+        position: relative;
+        height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: -30px -40px 0 -40px;
+        padding: 0 40px;
+      }
+
+      .header-section .logo-row {
+        margin: 0;
+        z-index: 2;
+      }
+
+      .content-section {
+        margin-top: 30px;
+      }
+
+      .success-icon {
+        font-size: 4rem;
+        color: #28a745;
+        margin-bottom: 20px;
+        animation: bounce 1s ease-in-out;
+      }
+
+      .success-title {
+        font-size: 2.5rem;
+        color: #28a745;
+        margin-bottom: 20px;
+        font-weight: bold;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .success-message {
+        font-size: 1.4rem;
+        color: #333;
+        margin-bottom: 30px;
+        line-height: 1.6;
+      }
+
+      .success-details {
+        background-color: #f8f9fa;
+        padding: 25px;
+        border-radius: 10px;
+        margin: 30px 0;
+        border-left: 5px solid #5690a9;
+      }
+
+      .success-details h3 {
+        color: #5690a9;
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+      }
+
+      .success-details p {
+        font-size: 1.1rem;
+        color: #555;
+        margin: 10px 0;
+      }
+
+      .logo-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        margin: 30px 0;
+      }
+
+      .logo-row img {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+      }
+
+      .logo-row img:hover {
+        transform: scale(1.1);
+      }
+
+      .back-button {
+        background-color: #5690a9;
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .back-button:hover {
+        background-color: #4a7c8f;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 10px !important;
+          margin: 0 !important;
+        }
+
+        .success-container {
+          padding: 15px;
+          margin: 10px;
+          width: calc(100% - 20px);
+          max-width: none;
+        }
+
+        .header-section {
+          margin: -15px -15px 0 -15px;
+          padding: 0 15px;
+        }
+
+        .success-title {
+          font-size: 2rem;
+        }
+
+        .success-message {
+          font-size: 1.2rem;
+        }
+
+        .logo-row {
+          gap: 20px;
+        }
+
+        .logo-row img {
+          width: 80px;
+          height: 80px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 5px !important;
+          margin: 0 !important;
+        }
+
+        .success-container {
+          padding: 15px 10px;
+          margin: 5px;
+          width: calc(100% - 10px);
+          max-width: none;
+        }
+
+        .header-section {
+          margin: -15px -10px 0 -10px;
+          padding: 0 10px;
+        }
+
+        .success-title {
+          font-size: 1.8rem;
+        }
+
+        .success-message {
+          font-size: 1.1rem;
+        }
+
+        .logo-row img {
+          width: 60px;
+          height: 60px;
+        }
+
+        .success-details {
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="success-container">
+      <div class="header-section">
+        <div class="logo-row">
+          <img src="/logo1.jpeg" alt="לוגו מכללת כנרת" />
+          <img src="/logo2.jpeg" alt="לוגו מכללת כנרת" />
+        </div>
+      </div>
+
+      <div class="content-section">
+        <div class="success-icon">🎉</div>
+
+        <h1 class="success-title">הטופס נשלח בהצלחה!</h1>
+
+        <p class="success-message">
+          תודה רבה על הרשמתך למסלול תואר B.A רב תחומי וחינוך במכללת כנרת
+        </p>
+
+        <div class="success-details">
+          <h3>מה קורה עכשיו?</h3>
+          <p>✅ קיבלנו את פרטי ההרשמה שלך</p>
+          <p>📞 נציג שלנו יצור איתך קשר בהקדם האפשרי</p>
+          <p>📚 נתחיל את תהליך ההרשמה המלא</p>
+        </div>
+
+        <p class="success-message">
+          אם יש לך שאלות נוספות, אל תהסס ליצור איתנו קשר
+        </p>
+
+        <a href="/" class="back-button">חזרה לדף הבית</a>
+      </div>
+    </div>
+  </body>
+</html>
