@@ -269,6 +269,48 @@
           </label>
         </div>
 
+        <!-- ID Card Upload Section -->
+        <div class="section">
+          <h3>תעודה זהות</h3>
+          <label for="idCardUpload">העלאת תמונת תעודת זהות</label>
+          <input
+            type="file"
+            id="idCardUpload"
+            name="idCard"
+            accept="image/*"
+            required
+            style="
+              width: 100%;
+              padding: 10px;
+              border: 2px dashed #ccc;
+              border-radius: 5px;
+              margin-bottom: 10px;
+            "
+          />
+          <div id="idCardPreview" style="display: none; margin-top: 10px">
+            <img
+              id="previewImage"
+              style="
+                max-width: 300px;
+                max-height: 200px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+              "
+            />
+            <button
+              type="button"
+              onclick="removeIdCard()"
+              class="clear-button"
+              style="margin-top: 10px"
+            >
+              הסר תמונה
+            </button>
+          </div>
+          <p style="font-size: 0.9em; color: #666; margin-top: 5px">
+            אנא העלה תמונת תעודת זהות ברורה וקריאה
+          </p>
+        </div>
+
         <!-- Restore signature section before submit button -->
         <div class="section">
           <h3>חתימה דיגיטלית</h3>
