@@ -2,7 +2,29 @@ const form = document.getElementById("registrationForm");
 const canvas = document.getElementById("signature-pad");
 const ctx = canvas.getContext("2d");
 const errorMsg = document.getElementById("errorMsg");
+const idCardUpload = document.getElementById("idCardUpload");
+const idCardPreview = document.getElementById("idCardPreview");
+const previewImage = document.getElementById("previewImage");
 let isDrawing = false;
+
+// ID Card Upload Preview
+idCardUpload.addEventListener("change", function (e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      previewImage.src = e.target.result;
+      idCardPreview.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+function removeIdCard() {
+  idCardUpload.value = "";
+  idCardPreview.style.display = "none";
+  previewImage.src = "";
+}
 
 // Canvas setup
 ctx.strokeStyle = "#000";
@@ -10,12 +32,12 @@ ctx.lineWidth = 2;
 ctx.lineCap = "round";
 
 // Mouse events
-canvas.addEventListener("mousedown", e => {
+canvas.addEventListener("mousedown", (e) => {
   isDrawing = true;
   ctx.beginPath();
   ctx.moveTo(e.offsetX, e.offsetY);
 });
-canvas.addEventListener("mousemove", e => {
+canvas.addEventListener("mousemove", (e) => {
   if (isDrawing) {
     ctx.lineTo(e.offsetX, e.offsetY);
     ctx.stroke();
@@ -25,14 +47,14 @@ canvas.addEventListener("mouseup", () => (isDrawing = false));
 canvas.addEventListener("mouseleave", () => (isDrawing = false));
 
 // Touch events
-canvas.addEventListener("touchstart", e => {
+canvas.addEventListener("touchstart", (e) => {
   e.preventDefault();
   isDrawing = true;
   const pos = getTouchPos(canvas, e);
   ctx.beginPath();
   ctx.moveTo(pos.x, pos.y);
 });
-canvas.addEventListener("touchmove", e => {
+canvas.addEventListener("touchmove", (e) => {
   e.preventDefault();
   if (isDrawing) {
     const pos = getTouchPos(canvas, e);
@@ -40,7 +62,7 @@ canvas.addEventListener("touchmove", e => {
     ctx.stroke();
   }
 });
-canvas.addEventListener("touchend", e => {
+canvas.addEventListener("touchend", (e) => {
   e.preventDefault();
   isDrawing = false;
 });
@@ -62,7 +84,11 @@ form.addEventListener("submit", function (event) {
   event.preventDefault();
   errorMsg.textContent = "";
 
-  const formData = new FormData(form);
+  // Check if ID card is uploaded
+  if (!idCardUpload.files[0]) {
+    errorMsg.textContent = "אנא העלה תמונת תעודת זהות לפני השליחה.";
+    return;
+  }
 
   // Check if signature is empty
   const blank = document.createElement("canvas");
@@ -74,25 +100,28 @@ form.addEventListener("submit", function (event) {
     return;
   }
 
+  const formData = new FormData(form);
+
   // Add signature as PNG blob
-  canvas.toBlob(blob => {
+  canvas.toBlob((blob) => {
     formData.append("signature", blob, "signature.png");
 
     fetch("/.netlify/functions/sendEmail", {
       method: "POST",
       body: formData,
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data.success) {
           window.open("/success.html", "_blank");
           form.reset();
           clearSignature();
+          removeIdCard();
         } else {
           errorMsg.textContent = "⚠️ שגיאה בשליחה.";
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("❌ Error sending:", err);
         errorMsg.textContent = "⚠️ שגיאה בשליחה לשרת.";
       });
