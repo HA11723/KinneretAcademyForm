@@ -56,8 +56,23 @@ export const handler = async (event) => {
         const signatureFile = files.find(
           (f) => f.name === "signature" || f.filename === "signature.png"
         );
+        const idCardFile = files.find((f) => f.name === "idCard");
 
         console.log("🔍 Looking for signature file:", signatureFile);
+        console.log("🔍 Looking for ID card file:", idCardFile);
+
+        // Check if ID card is uploaded
+        if (!idCardFile) {
+          console.error("❌ Missing ID card file");
+          console.log("📁 Available files:", files);
+          return resolve({
+            statusCode: 400,
+            body: JSON.stringify({
+              success: false,
+              error: "Missing ID card",
+            }),
+          });
+        }
 
         // Temporarily make signature optional for debugging
         /*
@@ -137,6 +152,9 @@ export const handler = async (event) => {
                 fields.agreement ? "כן" : "לא"
               }</p>
               
+              <h3 style="color: #333;">תמונת תעודת זהות:</h3>
+              <p><img src="cid:idCard" width="300" style="border: 1px solid #ddd; padding: 10px;"/></p>
+              
               <h3 style="color: #333;">חתימה דיגיטלית:</h3>
               <p><img src="cid:signature" width="300" style="border: 1px solid #ddd; padding: 10px;"/></p>
               
@@ -154,13 +172,12 @@ export const handler = async (event) => {
               contentType:
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Changed content type for Excel
             },
-            ...files
-              .filter((f) => f.name !== "signature")
-              .map((f) => ({
-                filename: f.filename,
-                content: f.content,
-                contentType: f.contentType,
-              })),
+            {
+              filename: "idCard.jpg",
+              content: idCardFile.content,
+              contentType: idCardFile.contentType,
+              cid: "idCard",
+            },
             {
               filename: "signature.png",
               content: signatureFile.content,
