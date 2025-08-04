@@ -305,10 +305,46 @@ canvas {
 }
 
 .section input#agreement {
-    width: 20px;
-    height: 20px;
+    width: auto;
+    margin: 0 8px 0 0;
     transform: scale(1.2);
+}
+
+/* File upload styling */
+input[type="file"] {
+    border: 2px dashed #5690a9;
+    background-color: #f8f9fa;
     cursor: pointer;
-    accent-color: #5690a9;
+    transition: all 0.3s ease;
+}
+
+input[type="file"]:hover {
+    border-color: #4a7c8f;
+    background-color: #e9ecef;
+}
+
+input[type="file"]:focus {
+    border-color: #5690a9;
+    box-shadow: 0 0 5px rgba(86, 144, 169, 0.3);
+}
+
+#idCardPreview {
+    text-align: center;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+#previewImage {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* File upload section specific styling */
+.section h3:contains("תעודה זהות") {
+    color: #5690a9;
+    border-bottom: 2px solid #5690a9;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
 }
 
