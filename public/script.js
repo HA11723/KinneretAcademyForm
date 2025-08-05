@@ -6,6 +6,7 @@ const idCardUpload = document.getElementById("idCardUpload");
 const idCardPreview = document.getElementById("idCardPreview");
 const previewImage = document.getElementById("previewImage");
 let isDrawing = false;
+let isSubmitting = false; // Prevent multiple submissions
 
 // ID Card Upload Preview
 idCardUpload.addEventListener("change", function (e) {
@@ -84,9 +85,33 @@ form.addEventListener("submit", function (event) {
   event.preventDefault();
   errorMsg.textContent = "";
 
+  // Prevent multiple submissions
+  if (isSubmitting) {
+    return;
+  }
+
+  isSubmitting = true;
+  const submitButton = form.querySelector('button[type="submit"]');
+  const originalText = submitButton.textContent;
+  submitButton.disabled = true;
+  submitButton.textContent = "שולח...";
+
   // Check if ID card is uploaded
   if (!idCardUpload.files[0]) {
     errorMsg.textContent = "אנא העלה תמונת תעודת זהות לפני השליחה.";
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+    isSubmitting = false;
+    return;
+  }
+
+  // Check file size (max 5MB)
+  const maxSize = 5 * 1024 * 1024; // 5MB
+  if (idCardUpload.files[0].size > maxSize) {
+    errorMsg.textContent = "גודל הקובץ גדול מדי. אנא העלה קובץ קטן מ-5MB.";
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+    isSubmitting = false;
     return;
   }
 
@@ -97,6 +122,9 @@ form.addEventListener("submit", function (event) {
   const blankSignature = blank.toDataURL();
   if (canvas.toDataURL() === blankSignature) {
     errorMsg.textContent = "אנא חתום בטופס לפני השליחה.";
+    submitButton.disabled = false;
+    submitButton.textContent = originalText;
+    isSubmitting = false;
     return;
   }
 
@@ -111,19 +139,34 @@ form.addEventListener("submit", function (event) {
       body: formData,
     })
       .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
         if (data.success) {
-          window.open("/success.html", "_blank");
-          form.reset();
-          clearSignature();
-          removeIdCard();
+          // Redirect to success page in the same window
+          window.location.href = "/success.html";
         } else {
-          errorMsg.textContent = "⚠️ שגיאה בשליחה.";
+          errorMsg.textContent = `⚠️ שגיאה בשליחה: ${
+            data.error || "שגיאה לא ידועה"
+          }`;
+          // Re-enable submit button on error
+          submitButton.disabled = false;
+          submitButton.textContent = originalText;
+          isSubmitting = false;
         }
       })
       .catch((err) => {
         console.error("❌ Error sending:", err);
-        errorMsg.textContent = "⚠️ שגיאה בשליחה לשרת.";
+        errorMsg.textContent =
+          "⚠️ שגיאה בשליחה לשרת. אנא נסה שוב או פנה לתמיכה.";
+        // Re-enable submit button on error
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
+        isSubmitting = false;
       });
   }, "image/png");
 });
