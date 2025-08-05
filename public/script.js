@@ -138,7 +138,6 @@ form.addEventListener("submit", function (event) {
       method: "POST",
       body: formData,
     })
-      .then((res) => res.json())
       .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
