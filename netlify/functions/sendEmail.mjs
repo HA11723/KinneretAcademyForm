@@ -13,9 +13,50 @@ const transporter = nodemailer.createTransport({
 });
 
 export const handler = async (event) => {
+  // Add CORS headers
+  const headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+  };
+
+  // Handle preflight requests
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers,
+      body: "",
+    };
+  }
+
   try {
     if (event.httpMethod !== "POST") {
-      return { statusCode: 405, body: "Method Not Allowed" };
+      return {
+        statusCode: 405,
+        headers,
+        body: JSON.stringify({ success: false, error: "Method Not Allowed" }),
+      };
+    }
+
+    // Check if environment variables are set
+    if (
+      !process.env.EMAIL_USER ||
+      !process.env.EMAIL_PASS ||
+      !process.env.EMAIL_RECEIVER
+    ) {
+      console.error("❌ Missing environment variables:", {
+        EMAIL_USER: !!process.env.EMAIL_USER,
+        EMAIL_PASS: !!process.env.EMAIL_PASS,
+        EMAIL_RECEIVER: !!process.env.EMAIL_RECEIVER,
+      });
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          error: "Server configuration error - please contact administrator",
+        }),
+      };
     }
 
     const rawBody = Buffer.from(event.body, "base64");
@@ -67,6 +108,7 @@ export const handler = async (event) => {
           console.log("📁 Available files:", files);
           return resolve({
             statusCode: 400,
+            headers,
             body: JSON.stringify({
               success: false,
               error: "Missing ID card",
@@ -74,20 +116,19 @@ export const handler = async (event) => {
           });
         }
 
-        // Temporarily make signature optional for debugging
-        /*
+        // Check if signature file exists
         if (!signatureFile) {
           console.error("❌ Missing signature file");
           console.log("📁 Available files:", files);
           return resolve({
             statusCode: 400,
+            headers,
             body: JSON.stringify({
               success: false,
               error: "Missing signature",
             }),
           });
         }
-        */
 
         // Create Excel file with form data
         const excelData = [
@@ -192,6 +233,7 @@ export const handler = async (event) => {
           console.log("✅ Email sent successfully");
           resolve({
             statusCode: 200,
+            headers,
             body: JSON.stringify({
               success: true,
               message: "הטופס נשלח בהצלחה",
@@ -201,6 +243,7 @@ export const handler = async (event) => {
           console.error("❌ Failed to send email:", error);
           resolve({
             statusCode: 500,
+            headers,
             body: JSON.stringify({
               success: false,
               error: error.message,
@@ -215,6 +258,7 @@ export const handler = async (event) => {
     console.error("❌ Handler failed:", err);
     return {
       statusCode: 500,
+      headers,
       body: JSON.stringify({
         success: false,
         error: err.message,
